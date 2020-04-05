@@ -29,3 +29,22 @@
 ion-content ion-toolbar {
   --background: translucent;
 }
+
+.product-name {
+  font-weight: bold;
+  font-style: italic;
+  font-size: -webkit-xxx-large;
+}
+
+.price {
+  margin-left: 15px;
+  font-weight: bold;
+  font-size: 22px;
+  float: left;
+  color: darkslategrey;
+}
+
+.button {
+  float: right;
+  margin-right: 5px;
+}

@@ -1,20 +1,58 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Products
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-item>
+    <ion-label>Country</ion-label>
+    <ion-select value="ro" okText="Okay" cancelText="Dismiss" [(ngModel)]="locale" (ionChange)="refreshProducts()">
+      <ion-select-option value="ro">Romania</ion-select-option>
+      <ion-select-option value="de">Germany</ion-select-option>
+      <ion-select-option value="int">International</ion-select-option>
+    </ion-select>
+  </ion-item>
+
+  <ion-list>
+
+    <ion-card *ngFor="let product of productList">
+      <ion-card-header>
+        <ion-card-subtitle>{{ product.category | uppercase }}</ion-card-subtitle>
+        <ion-card-title>
+          <div class="product-name">
+            {{ product.name }}
+          </div>
+        </ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div>
+          Country of Origin: {{ product.country }}
+        </div>
+
+        <div>
+          Stock: {{ product.stock }}
+        </div>
+      </ion-card-content>
+
+      <div>
+        <div class="price">
+          Price: {{ product.price }}
+        </div>
+
+        <div class="button">
+          <ion-button (click)="addToCart(product.id)">
+            <ion-icon [name]="getButtonIcon(product)"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
+    </ion-card>
+
+  </ion-list>
+
 </ion-content>
