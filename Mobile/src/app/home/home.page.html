@@ -1,7 +1,14 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Products
+      <div class="header-title">
+        Products
+      </div>
+      <div class="buy-button">
+        <ion-button (click)="goToBuyPage()">
+          <ion-icon name="cart-outline"></ion-icon>
+        </ion-button>
+      </div>
     </ion-title>
   </ion-toolbar>
 </ion-header>
@@ -45,7 +52,7 @@
         </div>
 
         <div class="button">
-          <ion-button (click)="addToCart(product.id)">
+          <ion-button (click)="addToCart(product.id)" [color]="getButtonColor(product)">
             <ion-icon [name]="getButtonIcon(product)"></ion-icon>
           </ion-button>
         </div>

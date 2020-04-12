@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import {ProductService} from '../product.service';
 import {Product} from '../../models/product';
+import {NavigationExtras, Router} from '@angular/router';
+import {ToastController} from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +16,9 @@ export class HomePage {
   cart: Array<Product> = new Array<Product>();
 
   constructor(
-      private productService: ProductService
+      private productService: ProductService,
+      private router: Router,
+      private toastController: ToastController
   ) {
     this.productList = this.productService.getProducts(this.locale);
   }
@@ -24,14 +28,27 @@ export class HomePage {
   }
 
   isProductAlreadyInCart(product): boolean {
-    return this.cart.includes(product);
+    for (const prod of this.cart) {
+      if (prod.id === product.id) {
+        return true;
+      }
+    }
+    return false;
   }
 
   getButtonIcon(product): string {
     if (this.isProductAlreadyInCart(product)) {
       return 'close-outline';
     } else {
-      return 'cart-outline';
+      return 'add-outline';
+    }
+  }
+
+  getButtonColor(product): string {
+    if (this.isProductAlreadyInCart(product)) {
+      return 'danger';
+    } else {
+      return 'primary';
     }
   }
 
@@ -46,8 +63,29 @@ export class HomePage {
       this.cart = this.cart.filter(x => x.id !== productId);
     }
 
-    for (const prod of this.cart) {
-      console.log(prod);
+    // for (const prod of this.cart) {
+    //   console.log(prod);
+    // }
+  }
+
+  async presentToast() {
+    const toast = await this.toastController.create({
+      message: 'No products have been added to cart!',
+      duration: 3000
+    });
+    toast.present();
+  }
+
+  goToBuyPage() {
+    if (this.cart.length === 0) {
+      this.presentToast();
+    } else {
+      const navigationExtras: NavigationExtras = {
+        state: {
+          cart: this.cart
+        }
+      };
+      this.router.navigate(['buy'], navigationExtras);
     }
   }
 }

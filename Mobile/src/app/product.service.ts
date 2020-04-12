@@ -38,14 +38,14 @@ export class ProductService {
 
       case 'de': {
         return [new Product({
-          id: 1,
+          id: 4,
           name: 'Chocolate',
           category: 'Food',
           stock: 4,
           price: 5,
           country: 'Germany'
         }), new Product({
-          id: 2,
+          id: 5,
           name: 'Jeans',
           category: 'Clothes',
           stock: 2,
@@ -56,7 +56,7 @@ export class ProductService {
 
       case 'int': {
         return [new Product({
-          id: 1,
+          id: 6,
           name: 'Monitor',
           category: 'Electronics',
           stock: 1,
@@ -69,6 +69,11 @@ export class ProductService {
         return [];
       }
     }
+  }
+
+  sendCart(cart: Array<Product>) {
+    console.log('Got cart, gonna send it to the server: ');
+    console.log(cart);
   }
 }
 

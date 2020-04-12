@@ -1,0 +1,57 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      <div class="back-button" style="font-size: 23px">
+        <ion-icon name="arrow-back-outline" routerLink="/home"></ion-icon>
+      </div>
+      <div class="header-title">
+        Finalize Purchase
+      </div>
+      <div class="buy-button">
+        <ion-button (click)="makeBuyRequest()" color="success">
+          <ion-icon name="cash-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-card class="card">
+      <ion-card-header>
+        <div class="header-text">
+          Your cart:
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div>
+          <ul>
+            <div *ngFor="let product of cart">
+              <li class="product">
+                <div>
+                  <span class="product">
+                    <b>{{ product.name }}</b>  x 1    <i>out of {{ product.stock }}</i>
+                  </span>
+                  <span class="product-price">
+                    {{ product.price }}
+                  </span>
+                </div>
+              </li>
+            </div>
+          </ul>
+        </div>
+
+        <div class="total-price">
+          <span>
+            Total price:
+          </span>
+          <span style="float: right; color: green">
+            {{ getPrice() }}
+          </span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
+</ion-content>
