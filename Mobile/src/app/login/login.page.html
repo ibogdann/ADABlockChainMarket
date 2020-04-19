@@ -1,0 +1,21 @@
+<ion-content>
+  <ion-card class="card">
+    <ion-card-content>
+      <div class="login-text">
+        LOGIN
+      </div>
+
+      <ion-item>
+        <ion-label class="input-label">Username</ion-label>
+        <ion-input clearInput [(ngModel)]="username"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label class="input-label">Password</ion-label>
+        <ion-input clearInput type="password" value="Password" [(ngModel)]="password"></ion-input>
+      </ion-item>
+
+      <ion-button expand="block" (click)="login()" class="login-button">Login</ion-button>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

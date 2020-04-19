@@ -1,0 +1,60 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      <div class="products-button">
+        <ion-button (click)="goToProductsPage()">
+          <ion-icon name="cafe-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="logout-button">
+        <ion-button color="danger" (click)="logout()">
+          <ion-icon name="log-out-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="header-title">
+        My Orders
+      </div>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-card class="card" *ngFor="let order of orderList">
+      <ion-card-header>
+        <div class="header-text">
+          Order ID {{ order.id }}
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div>
+          <ul>
+            <div *ngFor="let product of order.products">
+              <li class="product">
+                <div>
+                <span class="product">
+                  <b>{{ product.name }}</b>  x 1
+                </span>
+                  <span class="product-price">
+                  {{ product.price }}
+                </span>
+                </div>
+              </li>
+            </div>
+          </ul>
+        </div>
+
+        <div class="total-price">
+        <span>
+          Total price:
+        </span>
+          <span style="float: right; color: green">
+          {{ order.totalPrice }}
+        </span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
+</ion-content>
+

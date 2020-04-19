@@ -52,8 +52,19 @@ ion-content ion-toolbar {
 .header-title {
   float: left;
   margin-top: 12px;
+  text-align: center;
 }
 
 .buy-button {
   float: right;
+}
+
+.orders-button {
+  float: left;
+  margin-right: 5px;
+}
+
+.logout-button {
+  float: left;
+  margin-right: 5px;
 }

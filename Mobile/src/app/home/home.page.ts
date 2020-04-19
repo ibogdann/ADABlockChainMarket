@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import {ProductService} from '../product.service';
+import {ProductService} from '../../services/product.service';
 import {Product} from '../../models/product';
 import {NavigationExtras, Router} from '@angular/router';
 import {ToastController} from '@ionic/angular';
+import {LoginService} from '../../services/login.service';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +19,8 @@ export class HomePage {
   constructor(
       private productService: ProductService,
       private router: Router,
-      private toastController: ToastController
+      private toastController: ToastController,
+      private loginService: LoginService
   ) {
     this.productList = this.productService.getProducts(this.locale);
   }
@@ -87,5 +89,14 @@ export class HomePage {
       };
       this.router.navigate(['buy'], navigationExtras);
     }
+  }
+
+  goToOrdersPage() {
+    this.router.navigate(['orders']);
+  }
+
+  logout() {
+    this.loginService.doLogout();
+    this.router.navigate(['login']);
   }
 }

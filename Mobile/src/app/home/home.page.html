@@ -1,6 +1,15 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
+      <div class="orders-button">
+        <ion-button (click)="goToOrdersPage()">
+          <ion-icon name="albums-outline"></ion-icon>
+        </ion-button>
+      </div> <div class="logout-button">
+      <ion-button color="danger" (click)="logout()">
+        <ion-icon name="log-out-outline"></ion-icon>
+      </ion-button>
+    </div>
       <div class="header-title">
         Products
       </div>
