@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Product} from '../../models/product';
-import {ProductService} from '../../services/product.service';
+import {OrderService} from '../../services/order.service';
+import {Order} from '../../models/order';
+import {LoginService} from '../../services/login.service';
 
 @Component({
   selector: 'app-buy',
@@ -15,7 +17,8 @@ export class BuyPage implements OnInit {
   constructor(
       private route: ActivatedRoute,
       private router: Router,
-      private productService: ProductService
+      private orderService: OrderService,
+      private loginService: LoginService
   ) {
     this.route.queryParams.subscribe(_ => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -38,8 +41,14 @@ export class BuyPage implements OnInit {
     return price;
   }
 
-
   makeBuyRequest() {
-    this.productService.sendCart(this.cart);
+    const order = new Order({
+      id: 0,
+      user: this.loginService.getLoggedInUser(),
+      totalPrice: this.getPrice(),
+      products: this.cart
+    });
+
+    this.orderService.sendOrder(order);
   }
 }
