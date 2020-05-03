@@ -14,37 +14,37 @@ export class LoginService {
 
   doLogin(username: string, password: string): boolean {
 
-    // if (username === 'abcd' && password === '1234') {
-    //   this.loggedInUser = username;
-    //   return true;
-    // }
-    //
-    // return false;
+    if (username === 'abcd' && password === '1234') {
+      this.loggedInUser = username;
+      return true;
+    }
 
-    this.request.postLogin(username, password)
-        .then(_ => {
-          console.log('Logged in user ' + username + ' with password ' + password);
-          return true;
-        })
-        .catch((error) => {
-          console.log(error);
-          return false;
-        });
     return false;
+
+    // this.request.postLogin(username, password)
+    //     .then(_ => {
+    //       console.log('Logged in user ' + username + ' with password ' + password);
+    //       return true;
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //       return false;
+    //     });
+    // return false;
   }
 
   doLogout() {
     this.loggedInUser = '';
 
-    this.request.postLogout(this.loggedInUser)
-        .then(_ => {
-          console.log('Logged out user ' + this.loggedInUser);
-          return true;
-        })
-        .catch((error) => {
-          console.log(error);
-          return false;
-        });
+    // this.request.postLogout(this.loggedInUser)
+    //     .then(_ => {
+    //       console.log('Logged out user ' + this.loggedInUser);
+    //       return true;
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //       return false;
+    //     });
   }
 
   getLoggedInUser(): string {

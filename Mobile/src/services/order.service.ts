@@ -44,15 +44,16 @@ export class OrderService {
   // }
 
   sendOrder(order: Order) {
-    this.request.postOrder(order)
-        .then(_ => {
-          console.log('Posted order');
-          return true;
-        })
-        .catch((error) => {
-          console.log(error);
-          return false;
-        });
+    console.log('Sent message');
+    // this.request.postOrder(order)
+    //     .then(_ => {
+    //       console.log('Posted order');
+    //       return true;
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //       return false;
+    //     });
   }
 
   getOrders(username: string): Order[] {
@@ -61,8 +62,9 @@ export class OrderService {
     this.request.getOrders(username)
         .then(response => {
 
+          console.log(response);
           if (response) {
-            for (const order of response) {
+            for (const order of response._embedded.orderList) {
 
               const orderProducts = new Array<Product>();
               for (const product of order.products) {

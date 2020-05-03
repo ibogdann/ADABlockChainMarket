@@ -80,8 +80,9 @@ export class ProductService {
     this.request.getProducts(locale)
         .then(response => {
 
+          console.log(response);
           if (response) {
-            for (const product of response) {
+            for (const product of response._embedded.productList) {
               toReturn.push(new Product({
                 id: product.id,
                 name: product.name,

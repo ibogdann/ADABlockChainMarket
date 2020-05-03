@@ -18,7 +18,7 @@ export class OrdersPage implements OnInit {
       private loginService: LoginService,
       private orderService: OrderService
   ) {
-    this.orderList = this.orderService.getOrders();
+    this.orderList = this.orderService.getOrders(this.loginService.getLoggedInUser());
   }
 
   ngOnInit() {

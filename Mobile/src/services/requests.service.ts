@@ -7,7 +7,7 @@ import {Order} from '../models/order';
 })
 export class RequestsService {
 
-  private url: string = 'http://localhost:5000';
+  private url: string = 'https://block-chain-market.herokuapp.com';
 
   constructor(
       private http: HttpClient
