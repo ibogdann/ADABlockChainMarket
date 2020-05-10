@@ -12,6 +12,8 @@ import {LoginService} from '../../services/login.service';
 })
 export class BuyPage implements OnInit {
 
+  productsToOrder: Array<number>;
+  quantitiesToOrder: Array<number>;
   cart: Array<Product>;
 
   constructor(
@@ -22,33 +24,29 @@ export class BuyPage implements OnInit {
   ) {
     this.route.queryParams.subscribe(_ => {
       if (this.router.getCurrentNavigation().extras.state) {
+        this.productsToOrder = this.router.getCurrentNavigation().extras.state.productsToOrder;
+        this.quantitiesToOrder = this.router.getCurrentNavigation().extras.state.quantitiesToOrder;
         this.cart = this.router.getCurrentNavigation().extras.state.cart;
-        console.log(this.cart);
+
+        console.log(this.productsToOrder);
+        console.log(this.quantitiesToOrder);
       }
     });
   }
 
-  ngOnInit() {
-  }
-
-  getPrice(): number {
+  getPrice() {
     let price = 0;
-
-    for (const prod of this.cart) {
-      price += prod.price;
+    for (const product of this.cart) {
+      price += product.quantity * product.price;
     }
 
     return price;
   }
 
-  makeBuyRequest() {
-    const order = new Order({
-      id: 0,
-      user: this.loginService.getLoggedInUser(),
-      totalPrice: this.getPrice(),
-      products: this.cart
-    });
+  ngOnInit() {
+  }
 
-    this.orderService.sendOrder(order);
+  makeBuyRequest() {
+    this.orderService.sendOrder(this.productsToOrder, this.quantitiesToOrder);
   }
 }

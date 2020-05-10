@@ -5,6 +5,7 @@ export class Product {
     stock: number;
     price: number;
     country: string;
+    quantity: number = 0;
 
     constructor({id, name, category, stock, price, country}) {
         this.id = id;

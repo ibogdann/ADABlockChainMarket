@@ -19,42 +19,44 @@
 </ion-header>
 
 <ion-content>
-  <ion-item>
-    <ion-card class="card" *ngFor="let order of orderList">
-      <ion-card-header>
-        <div class="header-text">
-          Order ID {{ order.id }}
-        </div>
-      </ion-card-header>
-
-      <ion-card-content>
-        <div>
-          <ul>
-            <div *ngFor="let product of order.products">
-              <li class="product">
-                <div>
-                <span class="product">
-                  <b>{{ product.name }}</b>  x 1
-                </span>
-                  <span class="product-price">
-                  {{ product.price }}
-                </span>
-                </div>
-              </li>
+    <div *ngFor="let order of orderList">
+      <ion-item>
+        <ion-card class="card">
+          <ion-card-header>
+            <div class="header-text">
+              Order ID {{ order.id }}
             </div>
-          </ul>
-        </div>
+          </ion-card-header>
 
-        <div class="total-price">
-        <span>
-          Total price:
-        </span>
-          <span style="float: right; color: green">
-          {{ order.totalPrice }}
-        </span>
-        </div>
-      </ion-card-content>
-    </ion-card>
-  </ion-item>
+          <ion-card-content>
+            <div>
+              <ul>
+                <div *ngFor="let product of order.products">
+                  <li class="product">
+                    <div>
+                  <span class="product">
+                    <b>{{ product.name }}</b>  x {{ product.quantity }}
+                  </span>
+                      <span class="product-price">
+                    {{ product.price }}
+                  </span>
+                    </div>
+                  </li>
+                </div>
+              </ul>
+            </div>
+
+            <div class="total-price">
+          <span>
+            Total price:
+          </span>
+              <span style="float: right; color: green">
+            {{ order.totalPrice }}
+          </span>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+    </div>
 </ion-content>
 

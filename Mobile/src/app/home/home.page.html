@@ -61,9 +61,15 @@
         </div>
 
         <div class="button">
-          <ion-button (click)="addToCart(product.id)" [color]="getButtonColor(product)">
-            <ion-icon [name]="getButtonIcon(product)"></ion-icon>
+          <ion-button (click)="addProductQuantity(product)">
+            <ion-icon name="add-outline"></ion-icon>
           </ion-button>
+          <ion-button (click)="removeProductQuantity(product)">
+            <ion-icon name="remove-outline"></ion-icon>
+          </ion-button>
+          <span class="quantity">
+            {{ product.quantity }}
+          </span>
         </div>
       </div>
 

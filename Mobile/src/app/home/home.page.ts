@@ -14,6 +14,8 @@ export class HomePage {
 
   locale = 'ro';
   productList: Array<Product>;
+  productsToOrder: Array<number> = new Array<number>();
+  quantitiesToOrder: Array<number> = new Array<number>();
   cart: Array<Product> = new Array<Product>();
 
   constructor(
@@ -29,45 +31,14 @@ export class HomePage {
     this.productList = this.productService.getProducts(this.locale);
   }
 
-  isProductAlreadyInCart(product): boolean {
-    for (const prod of this.cart) {
-      if (prod.id === product.id) {
-        return true;
-      }
-    }
-    return false;
+  addProductQuantity(product: Product) {
+    product.quantity++;
   }
 
-  getButtonIcon(product): string {
-    if (this.isProductAlreadyInCart(product)) {
-      return 'close-outline';
-    } else {
-      return 'add-outline';
+  removeProductQuantity(product: Product) {
+    if (product.quantity !== 0) {
+      product.quantity--;
     }
-  }
-
-  getButtonColor(product): string {
-    if (this.isProductAlreadyInCart(product)) {
-      return 'danger';
-    } else {
-      return 'primary';
-    }
-  }
-
-  addToCart(productId) {
-    const prodToAdd = this.productList.find(x => x.id === productId);
-
-    if (!this.isProductAlreadyInCart(prodToAdd)) {
-      // add to cart
-      this.cart.push(this.productList.find(x => x.id === productId));
-    } else {
-      // remove from cart
-      this.cart = this.cart.filter(x => x.id !== productId);
-    }
-
-    // for (const prod of this.cart) {
-    //   console.log(prod);
-    // }
   }
 
   async presentToast() {
@@ -79,11 +50,21 @@ export class HomePage {
   }
 
   goToBuyPage() {
-    if (this.cart.length === 0) {
+    for (const product of this.productList) {
+      if (product.quantity && product.quantity > 0) {
+        this.productsToOrder.push(product.id);
+        this.quantitiesToOrder.push(product.quantity);
+        this.cart.push(product);
+      }
+    }
+
+    if (this.productsToOrder.length === 0) {
       this.presentToast();
     } else {
       const navigationExtras: NavigationExtras = {
         state: {
+          productsToOrder: this.productsToOrder,
+          quantitiesToOrder: this.quantitiesToOrder,
           cart: this.cart
         }
       };

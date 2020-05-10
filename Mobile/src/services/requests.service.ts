@@ -34,9 +34,14 @@ export class RequestsService {
     return this.http.get(this.url + '/products?locale=' + locale).toPromise();
   }
 
-  postOrder(order: Order): Promise<any> {
-    return this.http.post(this.url + '/order', {
-      order: order
+  getProduct(productId: number): Promise<any> {
+    return this.http.get(this.url + '/products/' + productId).toPromise();
+  }
+
+  postOrder(productIds, quantities): Promise<any> {
+    return this.http.post(this.url + '/orders', {
+      productsId: productIds,
+      productsQuantity: quantities
     }).toPromise();
   }
 
