@@ -27,6 +27,12 @@ export class HomePage {
     this.productList = this.productService.getProducts(this.locale);
   }
 
+  ionViewDidEnter() {
+    this.cart = new Array<Product>();
+    this.productsToOrder = new Array<number>();
+    this.quantitiesToOrder = new Array<number>();
+  }
+
   refreshProducts() {
     this.productList = this.productService.getProducts(this.locale);
   }

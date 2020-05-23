@@ -48,5 +48,10 @@ export class BuyPage implements OnInit {
 
   makeBuyRequest() {
     this.orderService.sendOrder(this.productsToOrder, this.quantitiesToOrder);
+    this.goToHomePage();
+  }
+
+  goToHomePage() {
+    this.router.navigate(['home']);
   }
 }
