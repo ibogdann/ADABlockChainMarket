@@ -12,39 +12,19 @@ export class LoginService {
       private request: RequestsService
   ) { }
 
-  doLogin(username: string, password: string): boolean {
-
-    if (username === 'abcd' && password === '1234') {
-      this.loggedInUser = username;
-      return true;
-    }
-
-    return false;
-
-    // this.request.postLogin(username, password)
-    //     .then(_ => {
-    //       console.log('Logged in user ' + username + ' with password ' + password);
-    //       return true;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //       return false;
-    //     });
-    // return false;
+  async doLogin(username: string, password: string) {
+    await this.request.postLogin(username, password)
+        .then(_ => {
+          console.log('Logged in user ' + username + ' with password ' + password);
+          this.loggedInUser = username;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
   }
 
   doLogout() {
     this.loggedInUser = '';
-
-    // this.request.postLogout(this.loggedInUser)
-    //     .then(_ => {
-    //       console.log('Logged out user ' + this.loggedInUser);
-    //       return true;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //       return false;
-    //     });
   }
 
   getLoggedInUser(): string {

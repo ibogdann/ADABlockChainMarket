@@ -16,37 +16,6 @@ export class OrderService {
       private loginService: LoginService
   ) { }
 
-  // TODO placeholder implementation, get orders lists from the actual servers
-  // getOrders(username: string): Order[] {
-  //   return [new Order({
-  //     id: 5,
-  //     user: username,
-  //     totalPrice: 1500,
-  //     products: [new Product({
-  //       id: 1,
-  //       name: 'Flour',
-  //       category: 'Food',
-  //       stock: 5,
-  //       price: 10,
-  //       country: 'Romania'
-  //     }), new Product({
-  //       id: 2,
-  //       name: 'Rice',
-  //       category: 'Food',
-  //       stock: 3,
-  //       price: 8,
-  //       country: 'Romania'
-  //     }), new Product({
-  //       id: 3,
-  //       name: 'T-Shirt',
-  //       category: 'Clothes',
-  //       stock: 10,
-  //       price: 50,
-  //       country: 'Romania'
-  //     })]}
-  //   )];
-  // }
-
   sendOrder(productsToOrder: Array<number>, quantitiesToOrder: Array<number>) {
     this.request.postOrder(productsToOrder, quantitiesToOrder);
   }

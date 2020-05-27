@@ -20,12 +20,6 @@ export class RequestsService {
     }).toPromise();
   }
 
-  postLogout(username: string): Promise<any> {
-    return this.http.post(this.url + '/logout', {
-      username: username
-    }).toPromise();
-  }
-
   getOrders(username: string): Promise<any> {
     return this.http.get(this.url + '/orders?user=' + username).toPromise();
   }

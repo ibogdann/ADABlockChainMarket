@@ -25,7 +25,9 @@ export class LoginPage implements OnInit {
   login() {
     console.log(this.username + ' ' + this.password);
 
-    if (this.loginService.doLogin(this.username, this.password)) {
+    this.loginService.doLogin(this.username, this.password);
+
+    if (this.loginService.loggedInUser !== '') {
       this.router.navigate(['home']);
     } else {
       this.presentToast();
