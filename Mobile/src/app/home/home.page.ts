@@ -4,6 +4,7 @@ import {Product} from '../../models/product';
 import {NavigationExtras, Router} from '@angular/router';
 import {ToastController} from '@ionic/angular';
 import {LoginService} from '../../services/login.service';
+import {RequestsService} from '../../services/requests.service';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,7 @@ import {LoginService} from '../../services/login.service';
 })
 export class HomePage {
 
-  locale = 'ro';
+  server = 'server1';
   productList: Array<Product>;
   productsToOrder: Array<number> = new Array<number>();
   quantitiesToOrder: Array<number> = new Array<number>();
@@ -22,9 +23,10 @@ export class HomePage {
       private productService: ProductService,
       private router: Router,
       private toastController: ToastController,
-      private loginService: LoginService
+      private loginService: LoginService,
+      private request: RequestsService
   ) {
-    this.productList = this.productService.getProducts(this.locale);
+    this.productList = this.productService.getProducts();
   }
 
   ionViewDidEnter() {
@@ -34,7 +36,16 @@ export class HomePage {
   }
 
   refreshProducts() {
-    this.productList = this.productService.getProducts(this.locale);
+
+    if (this.server === 'server1') {
+      this.request.url = this.request.servers[0];
+      console.log(this.request.url);
+    } else if (this.server === 'server2') {
+      this.request.url = this.request.servers[1];
+      console.log(this.request.url);
+    }
+
+    this.productList = this.productService.getProducts();
   }
 
   addProductQuantity(product: Product) {

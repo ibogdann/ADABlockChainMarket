@@ -11,10 +11,10 @@ export class ProductService {
       private request: RequestsService
   ) { }
 
-  getProducts(locale): Product[] {
+  getProducts(): Product[] {
     const toReturn = new Array<Product>();
 
-    this.request.getProducts(locale)
+    this.request.getProducts()
         .then(response => {
 
           console.log(response);

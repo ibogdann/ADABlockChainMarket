@@ -7,7 +7,8 @@ import {Order} from '../models/order';
 })
 export class RequestsService {
 
-  private url: string = 'https://block-chain-market.herokuapp.com';
+  public servers: string[] = ['https://block-chain-market.herokuapp.com', 'server2'];
+  public url: string = this.servers[0];
 
   constructor(
       private http: HttpClient
@@ -24,8 +25,8 @@ export class RequestsService {
     return this.http.get(this.url + '/orders?user=' + username).toPromise();
   }
 
-  getProducts(locale: string): Promise<any> {
-    return this.http.get(this.url + '/products?locale=' + locale).toPromise();
+  getProducts(): Promise<any> {
+    return this.http.get(this.url + '/products').toPromise();
   }
 
   getProduct(productId: number): Promise<any> {

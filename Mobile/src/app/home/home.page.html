@@ -24,14 +24,13 @@
 
 <ion-content [fullscreen]="true">
 
-<!--  <ion-item>-->
-<!--    <ion-label>Country</ion-label>-->
-<!--    <ion-select value="ro" okText="Okay" cancelText="Dismiss" [(ngModel)]="locale" (ionChange)="refreshProducts()">-->
-<!--      <ion-select-option value="ro">Romania</ion-select-option>-->
-<!--      <ion-select-option value="de">Germany</ion-select-option>-->
-<!--      <ion-select-option value="int">International</ion-select-option>-->
-<!--    </ion-select>-->
-<!--  </ion-item>-->
+  <ion-item>
+    <ion-label>Country</ion-label>
+    <ion-select value="server1" okText="Okay" cancelText="Dismiss" [(ngModel)]="server" (ionChange)="refreshProducts()">
+      <ion-select-option value="server1">Server 1</ion-select-option>
+      <ion-select-option value="server2">Server 2</ion-select-option>
+    </ion-select>
+  </ion-item>
 
   <ion-list>
 
