@@ -1,0 +1,262 @@
+<link href="./Bootstrap_files/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="./Bootstrap_files/bootstrap.min.js"></script>
+<!--<script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
+<!------ Include the above in your HEAD tag ---------->
+<script>
+var country = localStorage.getItem("country");
+var loggedIn = localStorage.getItem("loggedIn");
+if(country === null || loggedIn === null)
+{
+	window.open("homepage.html","_self");
+}
+var a="";
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', "http://localhost:8082/admin", false);
+
+            // build SOAP request
+            var req =
+                '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://webservice.soap.admin.freesoftware.org/">' +
+					'<soapenv:Header/>' +
+						'<soapenv:Body>' +
+							'<web:getAllProducts/>' +
+					   '</soapenv:Body>' +
+					'</soapenv:Envelope>';
+            
+			
+			xmlhttp.onreadystatechange = function () {
+                if (xmlhttp.readyState == 4) {
+                    if (xmlhttp.status == 200) {
+                        xmlDoc = xmlhttp.responseXML;
+						console.log(xmlDoc);
+						console.log("---");
+						x = xmlDoc.getElementsByTagName("return")[0].childNodes;
+						
+						//y=x[0].childNodes[0].childNodes[0].nodeValue;
+						//y=x[0];
+						//console.log(y);
+						
+						//console.log(document.getElementById('inputEmail').value);
+						//console.log(document.getElementById('inputPassword').value);
+						//y = x.nodeValue;
+						//console.log(y);
+						
+						for (i = 0; i < x.length-1; i++) {
+							var y=x[i];
+							var id=y.getElementsByTagName("id")[0].childNodes[0].nodeValue;
+							var name=y.getElementsByTagName("name")[0].childNodes[0].nodeValue;
+							var cat=y.getElementsByTagName("cat")[0].childNodes[0].nodeValue;
+							var country=y.getElementsByTagName("country")[0].childNodes[0].nodeValue;
+							var price=y.getElementsByTagName("price")[0].childNodes[0].nodeValue;
+							var stock=y.getElementsByTagName("stock")[0].childNodes[0].nodeValue;
+							
+							a = a + '<tr>' +
+									'<td class="col-sm-8 col-md-6">' +
+										'<div class="media">' +
+											'<div class="media-body">' +
+												'<h4 class="media-heading">' + name + '</h4>' +
+												'<h5 class="media-heading">' + cat +'</h5>' +
+												'<span>Country: '+ country +'</span>' +
+											'</div>' +
+										'</div>' +
+									'</td>' +
+									'<td class="col-sm-1 col-md-1" style="text-align: center">' +
+									'<input type="email" class="form-control" id="inputStock'+ id +'" value="">' +
+									'</td>' +
+									'<td class="col-sm-1 col-md-1 text-center"><strong>' + price +'</strong></td>' +
+									'<td class="col-sm-1 col-md-1 text-center"><strong>' + stock +'</strong></td>' +
+									'<td class="col-sm-1 col-md-1">' +
+									'<button type="button" class="btn btn-success" onclick="addQuantity('+ id +');">' +
+									   '<span class="glyphicon glyphicon-remove"></span> Add quantity' +
+									'</button>' +
+									'</td>' +
+									'<td class="col-sm-1 col-md-1">' +
+									'<button type="button" class="btn btn-warning" onclick="removeQuantity('+ id +');">' +
+										'<span class="glyphicon glyphicon-remove"></span> Remove quantity' +
+									'</button>' +
+									'</td>' +
+									'<td class="col-md-1">' +
+									'<button type="button" class="btn btn-danger" onclick="removeProduct('+ id +');">' +
+										'<span class="glyphicon glyphicon-remove"></span> Remove product' +
+									'</button></td>' +
+								'</tr>';
+						}
+                    }
+                }
+            }
+			
+            // Send the POST request
+            xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+			xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+            xmlhttp.send(req);
+			
+			
+
+ var b = '<tr>' +
+                        '<td class="col-sm-8 col-md-6">' +
+							'<div class="media">' +
+								'<div class="media-body">' +
+									'<h4 class="media-heading">Name</h4>' +
+									'<h5 class="media-heading">Category</h5>' +
+									'<span>Country: GE</span>' +
+								'</div>' +
+							'</div>' +
+						'</td>' +
+                        '<td class="col-sm-1 col-md-1" style="text-align: center">' +
+                        '<input type="email" class="form-control" id="exampleInputEmail1" value="">' +
+                        '</td>' +
+                        '<td class="col-sm-1 col-md-1 text-center"><strong>4.87</strong></td>' +
+                        '<td class="col-sm-1 col-md-1 text-center"><strong>14.61</strong></td>' +
+						'<td class="col-sm-1 col-md-1">' +
+                        '<button type="button" class="btn btn-success">' +
+                           '<span class="glyphicon glyphicon-remove"></span> Add quantity' +
+                        '</button>' +
+						'</td>' +
+                        '<td class="col-sm-1 col-md-1">' +
+                        '<button type="button" class="btn btn-warning">' +
+                            '<span class="glyphicon glyphicon-remove"></span> Remove quantity' +
+                        '</button>' +
+						'</td>' +
+						'<td class="col-md-1">' +
+                        '<button type="button" class="btn btn-danger">' +
+                            '<span class="glyphicon glyphicon-remove"></span> Remove product' +
+                        '</button></td>' +
+                    '</tr>';
+
+</script>
+<title>Blockchain Market - Products</title>
+
+<div class="container">
+<label>Welcome, <script>document.write(loggedIn)</script></label>
+    <div class="row">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th class="text-center">Price</th>
+                        <th class="text-center">Stock</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody>
+				    
+					<script type="text/javascript">
+						document.write(a);
+						</script>
+                    
+                        <td>   </td>
+                        <td>   </td>
+                        <td>   </td>
+                        <td>
+                        <button type="button" class="btn btn-danger" onclick="logout();">
+                            <span class="glyphicon glyphicon-shopping-cart"></span> Log out
+                        </button></td>
+                        <td>
+                        <button type="button" class="btn btn-success" onclick="addProduct();">
+                            Add product <span class="glyphicon glyphicon-play"></span>
+                        </button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+var serverIP = localStorage.getItem("serverIP");
+function logout() {
+	window.open("homepage.html","_self");
+}
+
+function addProduct() {
+	window.open("addProduct.html","_self");
+}
+
+function addQuantity(id) {
+	var quantity = document.getElementById('inputStock'+ id).value;
+	if(isNaN(quantity))
+	{
+		return;
+	}
+			var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', serverIP, true);
+
+            // build SOAP request
+            var req =
+                '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://webservice.soap.admin.freesoftware.org/">' +
+					'<soapenv:Header/>' +
+						'<soapenv:Body>' +
+							'<web:addQuantity>' +
+								'<arg0>'+id+'</arg0>' +
+								'<arg1>'+quantity+'</arg1>' +
+							'</web:addQuantity>' +
+					   '</soapenv:Body>' +
+					'</soapenv:Envelope>';
+            
+			
+			
+            // Send the POST request
+            xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+			xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+            xmlhttp.send(req);
+			
+			location.reload();
+}
+
+function removeQuantity(id) {
+	var quantity = document.getElementById('inputStock'+ id).value;
+	if(isNaN(quantity))
+	{
+		return;
+	}
+			var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', serverIP, true);
+
+            // build SOAP request
+            var req =
+                '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://webservice.soap.admin.freesoftware.org/">' +
+					'<soapenv:Header/>' +
+						'<soapenv:Body>' +
+							'<web:removeQuantity>' +
+								'<arg0>'+id+'</arg0>' +
+								'<arg1>'+quantity+'</arg1>' +
+							'</web:removeQuantity>' +
+					   '</soapenv:Body>' +
+					'</soapenv:Envelope>';
+            
+			
+			
+            // Send the POST request
+            xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+			xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+            xmlhttp.send(req);
+			
+			location.reload();
+}
+
+function removeProduct(id) {
+			var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', serverIP, true);
+
+            // build SOAP request
+            var req3 =
+                '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://webservice.soap.admin.freesoftware.org/">' +
+					'<soapenv:Header/>' +
+						'<soapenv:Body>' +
+							'<web:removeProduct>' +
+								'<arg0>'+id+'</arg0>' +
+							'</web:removeProduct>' +
+					   '</soapenv:Body>' +
+					'</soapenv:Envelope>';
+            
+			
+			
+            // Send the POST request
+            xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+			xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+            xmlhttp.send(req3);
+			location.reload();
+}
+
+</script>
+

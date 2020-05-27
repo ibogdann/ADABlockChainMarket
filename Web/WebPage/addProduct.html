@@ -1,0 +1,89 @@
+<link href="./Bootstrap_files/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="./Bootstrap_files/bootstrap.min.js"></script>
+<!--<script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
+<!------ Include the above in your HEAD tag ---------->
+<script>
+var country = localStorage.getItem("country");
+var loggedIn = localStorage.getItem("loggedIn");
+if(country === null || loggedIn === null)
+{
+	window.open("homepage.html","_self");
+}
+</script>
+<title>Blockchain Market - Add product</title>
+<div class="container">
+        <div class="col-sm-12 col-md-10 col-md-offset-1">
+            <form>
+			  <div class="form-group">
+				<label for="formGroupExampleInput">Name</label>
+				<input type="text" class="form-control" id="inputName" placeholder="Product name">
+			  </div>
+			  <div class="form-group">
+				<label for="formGroupExampleInput2">Category</label>
+				<input type="text" class="form-control" id="inputCategory" placeholder="Product category">
+			  </div>
+			  <div class="form-group">
+				<label for="formGroupExampleInput">Country</label>
+				 <select class="form-control" id="selectCountry">
+					<option>Romania</option>
+					<option>International</option>
+				</select>
+			  </div>
+			   <div class="form-group">
+				<label for="formGroupExampleInput">Price</label>
+				<input type="text" class="form-control" id="inputPrice" placeholder="0">
+			  </div>
+			   <div class="form-group">
+				<label for="formGroupExampleInput">Stock</label>
+				<input type="text" class="form-control" id="inputStock" placeholder="0">
+			  </div>
+			  <button type="button" class="btn btn-success" onclick="addProduct();">
+									   <span class="glyphicon glyphicon-remove"></span> Add product
+									</button>
+			   <button type="button" class="btn btn-danger" onclick="goBack();">
+                            <span class="glyphicon glyphicon-shopping-cart"></span> Cancel
+               </button>
+			</form>
+        </div>
+</div>
+<script>
+var serverIP = localStorage.getItem("serverIP");
+function addProduct() {
+	var name = document.getElementById('inputName').value;
+	var cat = document.getElementById('inputCategory').value;
+	var country = document.getElementById('selectCountry').value;
+	var price = document.getElementById('inputPrice').value;
+	var stock = document.getElementById('inputStock').value;
+			var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open('POST', serverIP, true);
+
+            // build SOAP request
+            var req =
+                '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://webservice.soap.admin.freesoftware.org/">' +
+					'<soapenv:Header/>' +
+						'<soapenv:Body>' +
+							'<web:addProduct>' +
+								'<arg0>'+name+'</arg0>' +
+								'<arg1>'+cat+'</arg1>' +
+								'<arg2>'+stock+'</arg2>' +
+								'<arg3>'+price+'</arg3>' +
+								'<arg4>'+country+'</arg4>' +
+							'</web:addProduct>' +
+					   '</soapenv:Body>' +
+					'</soapenv:Envelope>';
+            
+			
+			
+            // Send the POST request
+            xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+			xmlhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+            xmlhttp.send(req);
+
+			window.open("products.html","_self");
+}
+function goBack() {
+	window.open("products.html","_self");
+}
+</script>
+
+
