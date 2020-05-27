@@ -1,0 +1,50 @@
+package block.chain.market;
+
+<<<<<<< HEAD
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+=======
+import org.freesoftware.admin.soap.webservice.SOAPWebServiceProvider;
+>>>>>>> e7f3c24730f456561ab3423c5b30fe52a017c26e
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+//import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
+//import org.springframework.boot.context.properties.EnableConfigurationProperties;
+//
+//import block.chain.market.config.ServerConfiguration;
+
+<<<<<<< HEAD
+import block.chain.market.communication.SQSUtil;
+import block.chain.market.products.Product;
+=======
+import block.chain.market.web.WebDataProvider;
+>>>>>>> e7f3c24730f456561ab3423c5b30fe52a017c26e
+
+@SpringBootApplication
+//@ConfigurationPropertiesScan("block.chain.market.config")
+//@EnableConfigurationProperties(ServerConfiguration.class)
+<<<<<<< HEAD
+public class BlockChainMarketApplication implements CommandLineRunner{
+=======
+public class BlockChainMarketApplication {
+>>>>>>> e7f3c24730f456561ab3423c5b30fe52a017c26e
+
+	@Autowired
+    private SQSUtil<Product> sqsUtil;
+	
+	public static void main(String[] args) {
+		SpringApplication.run(BlockChainMarketApplication.class, args);
+	
+		String url = "http://localhost:8082/admin";
+		WebDataProvider repo = new WebDataProvider();
+		SOAPWebServiceProvider webServer = new SOAPWebServiceProvider();
+		webServer.begin(repo, url);
+	}
+	
+	@Override
+    public void run(String... args) throws Exception {
+
+        sqsUtil.startListeningToMessages();
+	}
+
+}
