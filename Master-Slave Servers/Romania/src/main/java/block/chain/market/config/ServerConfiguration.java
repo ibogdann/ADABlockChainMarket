@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties("server")
 public class ServerConfiguration {
-	private String location;
+	private static String location = "Romania";
 
-	public String getLocation() {
+	public static String getLocation() {
 		return location;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public static void setLocation(String location) {
+		ServerConfiguration.location = location;
 	}
 }

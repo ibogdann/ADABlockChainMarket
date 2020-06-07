@@ -25,12 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import block.chain.market.communication.SQSUtil;
+import block.chain.market.communication.OrderMessageCompiler;
 import block.chain.market.products.InsufficientStockException;
 import block.chain.market.products.Product;
 import block.chain.market.products.ProductModelAssembler;
 import block.chain.market.products.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
+@Slf4j
 @RequestMapping("/orders")
 public class OrderController {
 	
@@ -40,14 +43,20 @@ public class OrderController {
 	@Autowired
 	private ProductRepository productRepository;
 	
-	@Autowired
-	private SQSUtil<List<Product>> sqsUtilProducts;
+//	@Autowired
+//	private SQSUtil<List<Product>> sqsUtilProducts;
+//	
+//	@Autowired
+//	private SQSUtil<List<Integer>> sqsUtilQuantities;
 	
 	@Autowired
-	private SQSUtil<List<Integer>> sqsUtilQuantities;
+	private SQSUtil<String> sqsUtil;
 	
 	private final OrderModelAssembler orderAssembler;
 	private final ProductModelAssembler productAssmebler;
+	
+	@Autowired
+	private OrderMessageCompiler messageCompiler;
 
 	OrderController(OrderModelAssembler orderAssembler, ProductModelAssembler productAssembler) {
 		
@@ -117,8 +126,9 @@ public class OrderController {
 		
 		List<Product> foreignProducts = new ArrayList<Product>();
 		List<Integer> quantities = new ArrayList<Integer>();
+		List<Long> ids = new ArrayList<Long>();
 		
-		int index = 0;
+//		int index = 0;
 		
 		try {
 			float totalValue = 0;
@@ -133,6 +143,7 @@ public class OrderController {
 				}else {
 //					index = i;
 //					throw new InsufficientStockException(requestedQuantity, availableQuantity);
+					ids.add(productList.get(i).getId());
 					foreignProducts.add(productList.get(i));
 					quantities.add(requestedQuantity);
 				}
@@ -155,20 +166,31 @@ public class OrderController {
 			
 		}
 		
-		if(!foreignProducts.isEmpty()) {
-			sqsUtilProducts.sendSQSMessage(foreignProducts);
-			sqsUtilQuantities.sendSQSMessage(quantities);
+		if(!foreignProducts.isEmpty() && !quantities.isEmpty()) {
+			String message = messageCompiler.compile(foreignProducts, quantities);
+			sqsUtil.sendSQSMessage(message);
+			order.deleteProducts(ids);
+			log.info("Remaining order: " + order);
+//			log.info("Sent product request: " + foreignProducts);
+//			log.info("Sent quantity request: " + quantities);
+//			sqsUtilProducts.sendSQSMessage(foreignProducts);
+//			sqsUtilQuantities.sendSQSMessage(quantities);
 		}
 		
-		Order newOrder = orderRepository.save(order);
-
+		if(!order.isEmpty()) {
+			Order newOrder = orderRepository.save(order);
+			return ResponseEntity
+					.created(linkTo(methodOn(OrderController.class).one(newOrder.getId())).toUri())
+					.body(orderAssembler.toModel(newOrder));
+		}
+		
 		return ResponseEntity
-				.created(linkTo(methodOn(OrderController.class).one(newOrder.getId())).toUri())
-				.body(orderAssembler.toModel(newOrder));
+				.status(HttpStatus.CONFLICT)
+				.body(new VndErrors.VndError("Stock not enough", "Order might have been sent to other server."));
 	}
 	  
 	@DeleteMapping("/{id}/cancel")
-	ResponseEntity<RepresentationModel> cancel(@PathVariable Long id) {
+	ResponseEntity<RepresentationModel<?>> cancel(@PathVariable Long id) {
 
 		Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 
@@ -183,7 +205,7 @@ public class OrderController {
 	}
 	
 	@PutMapping("/{id}/complete")
-	ResponseEntity<RepresentationModel> complete(@PathVariable Long id) {
+	ResponseEntity<RepresentationModel<?>> complete(@PathVariable Long id) {
 
 		Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 		

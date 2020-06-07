@@ -1,5 +1,6 @@
 package block.chain.market.orders;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -35,5 +36,21 @@ public class Order {
 		this.productsQuantity = productsQuantity;
 		this.totalValue = totalValue;
 		this.status = status;
+	}
+	
+	public void deleteProducts(List<Long> productIds) {
+		for(Long id: productIds) {
+			productsQuantity.remove(new ArrayList<Long>(productsId).indexOf(id));
+			productsId.remove(id);
+		}
+	}
+	
+	public void deleteProduct(Long id) {
+		productsQuantity.remove(new ArrayList<Long>(productsId).indexOf(id));
+		productsId.remove(id);
+	}
+	
+	public boolean isEmpty() {
+		return productsId.isEmpty();
 	}
 }

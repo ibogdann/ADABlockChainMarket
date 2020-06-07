@@ -42,6 +42,8 @@ public class SQSUtil<T> {
 
         log.info("SQS URL: " + sqsUrl);
         log.info("Region: " + awsRegion);
+        log.info("awsAccessKey: " + awsAccessKey);
+        log.info("awsSecretKey: " + awsSecretKey);
 
         AWSCredentialsProvider awsCredentialsProvider = new AWSStaticCredentialsProvider(
                 new BasicAWSCredentials(awsAccessKey, awsSecretKey)

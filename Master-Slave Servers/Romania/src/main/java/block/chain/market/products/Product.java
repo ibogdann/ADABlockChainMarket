@@ -9,6 +9,8 @@ import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
 
+import block.chain.market.config.ServerConfiguration;
+
 @Component
 @Data
 @Entity
@@ -30,5 +32,6 @@ public class Product {
 		this.category = category;
 		this.stock = stock;
 		this.price = price;
+		this.country = ServerConfiguration.getLocation();
 	}
 }
