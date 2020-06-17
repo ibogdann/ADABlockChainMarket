@@ -104,7 +104,7 @@
 				</executions>
 				<configuration>
 					<sources>
-						<source>${project.basedir}/src/main/resources/countries.xsd</source>
+						<source>${project.basedir}/src/main/resources/admin.xsd</source>
 					</sources>
 				</configuration>
 			</plugin>

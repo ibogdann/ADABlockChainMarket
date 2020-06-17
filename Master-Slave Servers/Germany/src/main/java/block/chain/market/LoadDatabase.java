@@ -15,20 +15,22 @@ import block.chain.market.orders.OrderRepository;
 import block.chain.market.orders.Status;
 import block.chain.market.products.Product;
 import block.chain.market.products.ProductRepository;
+import block.chain.market.users.User;
+import block.chain.market.users.UserRepository;
 
 @Configuration
 @Slf4j
 class LoadDatabase {
 
   @Bean
-  CommandLineRunner initDatabase(ProductRepository productRepository, OrderRepository orderRepository) {
+  CommandLineRunner initDatabase(ProductRepository productRepository, OrderRepository orderRepository, UserRepository userRepository) {
 	  
     return args -> {
     
-    	Product chocolate = new Product("Chocolate", "Food", 600, 5);
-  	  	Product monitor = new Product("Monitor", "Electronics", 250, 1000);
-  	  	Product t_shirt = new Product("T-Shirt", "Clothes", 1000, 10);
-  	  	Product cheese = new Product("Cheese", "Food", 450, 6);
+    	Product chocolate = new Product("Chocolate", "Food", 6000, 5);
+  	  	Product monitor = new Product("Monitor", "Electronics", 2500, 1000);
+  	  	Product t_shirt = new Product("T-Shirt", "Clothes", 10000, 10);
+  	  	Product cheese = new Product("Cheese", "Food", 4500, 6);
     	
   	  	log.info("Preloading " + productRepository.save(chocolate));
   	  	log.info("Preloading " + productRepository.save(monitor));
@@ -45,6 +47,9 @@ class LoadDatabase {
   	  	log.info("Preloading " + orderRepository.save(order1));
   	  	log.info("Preloading " + orderRepository.save(order2));
   	  	log.info("Preloading " + orderRepository.save(order3));
+  	  	
+  	  	User user = new User("user", "123123");
+	  	log.info("Preloading " + userRepository.save(user));
     };
     
 	

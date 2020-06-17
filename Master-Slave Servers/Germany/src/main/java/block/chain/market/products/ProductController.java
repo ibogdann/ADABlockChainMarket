@@ -95,4 +95,8 @@ public class ProductController {
 		  
 		  return ResponseEntity.noContent().build();
 	  }
+	  
+	  public List<Product> getProducts(){
+		  return repository.findAll();
+	  }
 }

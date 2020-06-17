@@ -1,15 +1,13 @@
 package block.chain.market.communication;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -21,18 +19,19 @@ import com.amazonaws.services.sqs.model.DeleteMessageRequest;
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageResult;
-import com.fasterxml.jackson.core.JsonParseException;
+//import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
+//import com.fasterxml.jackson.core.type.TypeReference;
+//import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import block.chain.market.orders.OrderController;
-import block.chain.market.orders.OrderModelAssembler;
-import block.chain.market.orders.OrderRepository;
+//import block.chain.market.orders.OrderModelAssembler;
+//import block.chain.market.orders.OrderRepository;
 import block.chain.market.products.Product;
-import block.chain.market.products.ProductModelAssembler;
-import block.chain.market.products.ProductRepository;
+import block.chain.market.products.ProductController;
+//import block.chain.market.products.ProductModelAssembler;
+//import block.chain.market.products.ProductRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -53,11 +52,16 @@ public class SQSUtil<T> {
     
     @Autowired
 	private OrderController orderController;
-
+    
     private AmazonSQS amazonSQS;
     
     private ObjectMapper objectMapper;
-
+    
+    @Autowired
+	private OrderMessageCompiler messageCompiler;
+    
+    @Autowired
+    private ProductController productController;
 
     @PostConstruct
     private void postConstructor() {
@@ -75,6 +79,8 @@ public class SQSUtil<T> {
         					.build();
         
         this.objectMapper = new ObjectMapper();
+        
+        this.messageCompiler = new OrderMessageCompiler();
      
     }
 
@@ -87,50 +93,60 @@ public class SQSUtil<T> {
         log.info("SQS Message ID: " + result.getMessageId());
     }
     
-    public void startListeningToMessages() throws JsonParseException, JsonMappingException, IOException {
+    public void startListeningToMessages() {
     	
     	final ReceiveMessageRequest receiveMessageRequest = new ReceiveMessageRequest(sqsUrl)
-                .withMaxNumberOfMessages(2)
+                .withMaxNumberOfMessages(1)
                 .withWaitTimeSeconds(3);
     	
     	while (true) {
 
             final List<Message> messages = amazonSQS.receiveMessage(receiveMessageRequest).getMessages();
-            List<Product> productList = null;
-            List<Integer> quantities = null;
+            List<Product> productList = new ArrayList<Product>();
+            List<Product> availableProducts = productController.getProducts();
+            List<Integer> quantities = new ArrayList<Integer>();
+            Map<Product, Integer> orderMap = null;
             
-            if(messages.size() == 2) {
-
-	            for (Message messageObject : messages) {
-	            	
-	            	String message = messageObject.getBody();
-	            	
-	            	try {
-	            		productList = this.objectMapper.readValue(message, new TypeReference<List<Product>>(){});
-	            		log.info("Received productList: " + productList);
-	            		
-	            	}catch(Exception e1) {
-	            		
-	            		try {
-		            		quantities = this.objectMapper.readValue(message, new TypeReference<List<Integer>>(){});
-		            		log.info("Received quantities: " + quantities);
-		            		
-	            		}catch(Exception e2) {
-	            			log.info("Delete unknown message type: " + message);
-	            			deleteMessage(messageObject);
-	                		continue;
-	            		}
-	            	}
-	            }
-	            
-	            for (Message messageObject : messages) {
-	            	deleteMessage(messageObject);
-	            }
-	            
-	            log.info("productList before func call: " + productList);
-                log.info("Quantities before func call: " + quantities);
-                
-                orderController.foreignOrder(productList, quantities);
+            for (Message messageObject : messages) {
+            	
+            	String message = messageObject.getBody();
+            	log.info("message: " + message);
+            	log.info("Available products: " + availableProducts);
+            	orderMap = messageCompiler.decompile(message, availableProducts);
+            	log.info("Order map: " + orderMap.size());
+            	for(Map.Entry<Product, Integer> entry: orderMap.entrySet()) {
+            		Product product = entry.getKey();
+            		Integer quantity = entry.getValue();
+            		log.info("Product: " + product.getName() + " Quantity: " + quantity);
+            		productList.add(product);
+            		quantities.add(quantity);
+            	}
+            	
+            	deleteMessage(messageObject);
+            	orderController.foreignOrder(productList, quantities);
+            	
+//            	try {
+//            		productList = this.objectMapper.readValue(message, new TypeReference<List<Product>>(){});
+//            		log.info("Received productList: " + productList);
+//            		
+//            	}catch(Exception e1) {
+//            		
+//            		try {
+//	            		quantities = this.objectMapper.readValue(message, new TypeReference<List<Integer>>(){});
+//	            		log.info("Received quantities: " + quantities);
+//	            		
+//            		}catch(Exception e2) {
+//            			log.info("Delete unknown message type: " + message);
+//            			deleteMessage(messageObject);
+//                		continue;
+//            		}
+//            	}
+//	            
+//	            
+//	            
+//	            log.info("productList before func call: " + productList);
+//                log.info("Quantities before func call: " + quantities);
+//                
             
             }
     	}

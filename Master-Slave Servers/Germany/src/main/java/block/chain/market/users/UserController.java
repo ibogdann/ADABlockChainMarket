@@ -7,9 +7,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.mediatype.vnderrors.VndErrors;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +25,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import block.chain.market.products.Product;
-import block.chain.market.products.ProductController;
-import block.chain.market.products.ProductModelAssembler;
-import block.chain.market.products.ProductNotFoundException;
-import block.chain.market.products.ProductRepository;
 
 @RestController
 @RequestMapping("/users")
@@ -51,14 +51,36 @@ public class UserController {
 	    linkTo(methodOn(UserController.class).all()).withSelfRel());
 	}
 
-	@PostMapping
-	ResponseEntity<?> newUser(@RequestBody User newUser){
+	@PostMapping("/createUser")
+	ResponseEntity<?> createUser(@RequestBody User newUser){
 
 	  EntityModel<User> entityModel = assembler.toModel(repository.save(newUser));
 
 	  return ResponseEntity
 	    .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
 	    .body(entityModel);
+	}
+	
+	@PostMapping("/login")
+	ResponseEntity<?> checkExistingUser(@RequestBody User newUser){
+		
+		ExampleMatcher userDataMatcher = ExampleMatcher.matching()
+				.withIgnorePaths("id")
+				.withMatcher("username", GenericPropertyMatchers.exact())
+				.withMatcher("password", GenericPropertyMatchers.exact());
+		
+		Example<User> authData = Example.of(newUser, userDataMatcher);
+
+		if(repository.exists(authData)) {
+
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.body(new VndErrors.VndError("Log In", "Successful !"));
+		} else {
+			return ResponseEntity
+					.status(HttpStatus.UNAUTHORIZED)
+					.body(new VndErrors.VndError("Log In", "Failed !"));
+		}
 	}
 
 	  // Single item

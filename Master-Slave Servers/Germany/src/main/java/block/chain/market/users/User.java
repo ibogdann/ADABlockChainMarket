@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 @Entity
-@Table(name = "products")
+@Table(name = "users")
 public class User {
 	
 	private @Id @GeneratedValue Long id;

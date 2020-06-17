@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-import block.chain.market.communication.SQSUtil;
+//import block.chain.market.communication.OrderMessageCompiler;
+//import block.chain.market.communication.SQSUtil;
 import block.chain.market.products.InsufficientStockException;
 import block.chain.market.products.Product;
 import block.chain.market.products.ProductModelAssembler;
@@ -41,11 +42,14 @@ public class OrderController {
 	@Autowired
 	private ProductRepository productRepository;
 	
-	@Autowired
-	private SQSUtil<Product> sqsUtil;
+//	@Autowired
+//	private SQSUtil<String> sqsUtil;
 	
 	private final OrderModelAssembler orderAssembler;
 	private final ProductModelAssembler productAssmebler;
+	
+//	@Autowired
+//	private OrderMessageCompiler messageCompiler;
 
 	OrderController(OrderModelAssembler orderAssembler, ProductModelAssembler productAssembler) {
 		
@@ -135,7 +139,7 @@ public class OrderController {
 					.stream()
 					.collect(Collectors.toList());
 			
-			sqsUtil.sendSQSMessage(productList.get(index));
+//			sqsUtil.sendSQSMessage(productList.get(index));
 			
 			return ResponseEntity
 					.status(HttpStatus.CONFLICT)
@@ -154,7 +158,7 @@ public class OrderController {
 	}
 	  
 	@DeleteMapping("/{id}/cancel")
-	ResponseEntity<RepresentationModel> cancel(@PathVariable Long id) {
+	ResponseEntity<RepresentationModel<?>> cancel(@PathVariable Long id) {
 
 		Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 
@@ -169,7 +173,7 @@ public class OrderController {
 	}
 	
 	@PutMapping("/{id}/complete")
-	ResponseEntity<RepresentationModel> complete(@PathVariable Long id) {
+	ResponseEntity<RepresentationModel<?>> complete(@PathVariable Long id) {
 
 		Order order = orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
 		
@@ -206,8 +210,6 @@ public class OrderController {
 		log.info("Quantities list: " + quantities);
 		
 		Order order = new Order();
-		log.info("Order: " + order);
-		order.setStatus(Status.IN_PROGRESS);
 		
 		List<String> existingProductsNames = productRepository.findAll()
 				.stream()
@@ -219,18 +221,18 @@ public class OrderController {
 				.collect(Collectors.toList());
 		
 		for(Product product: products) {
-			log.info("Order: " + order);
 			int productId = existingProductsNames.indexOf(product.getName());
 			int quantity = quantities.get(products.indexOf(product));
 			if(productId != -1) {
 				Product orderProduct = existingProducts.get(productId);
+				log.info("Product ordered: " + orderProduct);
 				if(orderProduct.getStock() >= quantity) {
 					order.addProduct(orderProduct, quantity);
 				}
 			}
 			
 			log.info("Placed order: " + order);
-			
+			orderRepository.save(order);
 		}
 
 	}
